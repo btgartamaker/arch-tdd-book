@@ -1,8 +1,8 @@
 from sqlalchemy import Table, MetaData, Column, Integer, String, Date, ForeignKey
 from sqlalchemy.orm import mapper, relationship
-from sqlalchemy.sql.functions import mode
 
-import model
+from domain import model
+
 
 metadata = MetaData()
 
@@ -12,7 +12,7 @@ order_lines = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("sku", String(255)),
     Column("qty", Integer, nullable=False),
-    Column("orderid", String(255))
+    Column("orderid", String(255)),
 )
 
 batches = Table(
@@ -33,6 +33,7 @@ allocations = Table(
     Column("batch_id", ForeignKey("batches.id")),
 )
 
+
 def start_mappers():
     lines_mapper = mapper(model.OrderLine, order_lines)
     mapper(
@@ -40,7 +41,7 @@ def start_mappers():
         batches,
         properties={
             "_allocations": relationship(
-                lines_mapper, secondary=allocations, collection_class=set
+                lines_mapper, secondary=allocations, collection_class=set,
             )
-        }
+        },
     )

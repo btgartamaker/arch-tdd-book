@@ -1,4 +1,4 @@
-import model
+from domain import model
 from datetime import date
 
 
@@ -24,6 +24,16 @@ def test_orderline_mapper_can_save_lines(session):
 
     rows = list(session.execute('SELECT orderid, sku, qty from "order_lines"'))
     assert rows == [("order1", "DECORATIVE-WIDGET", 12)]
+
+
+def test_saving_batches(session):
+    batch = model.Batch("batch1", "sku1", 100, eta=None)
+    session.add(batch)
+    session.commit()
+    rows = session.execute(
+        'SELECT reference, sku, _purchased_quantity, eta FROM "batches"'
+    )
+    assert list(rows) == [("batch1", "sku1", 100, None)]
 
 def test_retrieving_batches(session):
     session.execute(
