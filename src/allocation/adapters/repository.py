@@ -3,12 +3,12 @@ from allocation.domain import model
 
 
 class AbstractRepository(abc.ABC):
-    @abc.abstractclassmethod
-    def add(self, batch: model.Batch):
+    @abc.abstractmethod
+    def add(self, product: model.Product):
         raise NotImplementedError
 
-    @abc.abstractclassmethod
-    def get(self, reference) -> model.Batch:
+    @abc.abstractmethod
+    def get(self, sku) -> model.Product:
         raise NotImplementedError
 
 
@@ -16,11 +16,8 @@ class SqlAlchemyRepository(AbstractRepository):
     def __init__(self, session):
         self.session = session
 
-    def add(self, batch):
-        self.session.add(batch)
-    
-    def get(self, reference):
-        return self.session.query(model.Batch).filter_by(reference=reference).one()
+    def add(self, product):
+        self.session.add(product)
 
-    def list(self):
-        return self.session.query(model.Batch).all()
+    def get(self, sku):
+        return self.session.query(model.Product).filter_by(sku=sku).first()
